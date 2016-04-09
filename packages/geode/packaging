@@ -1,0 +1,4 @@
+set -e -x
+
+tar xzf geode/apache-geode-1.0.0-incubating.M1.tar.gz
+cp -a apache-geode-1.0.0-incubating.M1/* ${BOSH_INSTALL_TARGET}

@@ -1,0 +1,73 @@
+---
+name: geode-deployment
+
+director_uuid: 8d3e5fb9-d242-4757-9047-3bad6af24dec
+
+releases:
+- {name: geode, version: latest}
+
+networks:
+- name: default
+  type: manual
+  subnets:
+  - range: 10.0.0.0/24
+    gateway: 10.0.0.1
+    reserved: [10.0.0.2-10.0.0.50]
+    cloud_properties: 
+      subnet: subnet-e0bbb7b9
+
+resource_pools:
+- name: geode-locators
+  network: default
+  stemcell:
+    name: bosh-aws-xen-hvm-ubuntu-trusty-go_agent
+    version: 3215
+  cloud_properties:
+    instance_type: r3.large
+
+- name: geode-cacheservers
+  network: default
+  stemcell:
+    name: bosh-aws-xen-hvm-ubuntu-trusty-go_agent
+    version: 3215
+  cloud_properties:
+    instance_type: r3.large
+
+compilation:
+  workers: 2
+  network: default
+  cloud_properties:
+    instance_type: m3.medium
+
+update:
+  canaries: 1
+  max_in_flight: 10
+  canary_watch_time: 1000-30000
+  update_watch_time: 1000-30000
+  serial: false
+
+jobs:
+- name: geode-locator
+  instances: 2
+  templates:
+  - {name: locator, release: geode}
+  consumes:
+    locator: {from: geode-locator}
+  provides:
+    discovery: {as: geode-locator}
+  persistent_disk: 10_240
+  resource_pool: geode-locators
+  networks:
+  - name: default
+
+- name: geode-cacheserver
+  instances: 3
+  templates:
+  - {name: cacheserver, release: geode}
+  consumes:
+    locator: {from: geode-locator}
+  persistent_disk: 10_240
+  resource_pool: geode-cacheservers
+  networks:
+  - name: default
+

@@ -1,0 +1,26 @@
+#! /bin/bash
+
+RUN_DIR=/var/vcap/sys/run/locator
+
+export JAVA_HOME=/var/vcap/packages/jdk8
+export GEODE_HOME=/var/vcap/packages/geode
+
+export PATH=$JAVA_HOME/bin:$GEODE_HOME/bin:$PATH
+
+case $1 in
+  start)
+    mkdir -p ${RUN_DIR}
+    chown vcap:vcap ${RUN_DIR}
+
+    chpst -u vcap:vcap gfsh start locator --name=`hostname` \
+      --dir=${RUN_DIR}                                      \
+      --initial-heap=<%= p("locator.initial_heap") %>       \
+      --max-heap=<%= p("locator.max_heap") %>               \
+      --port=<%= p("locator.port") %>                       \
+      --locators="<%= link('locator').instances.map { |x| x.address + '[10334]' }.join(',') %>"
+    ;;
+
+  stop)
+    gfsh stop locator --dir=${RUN_DIR}
+    ;;
+esac

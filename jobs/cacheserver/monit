@@ -1,0 +1,5 @@
+check process cacheserver
+  with pidfile /var/vcap/sys/run/cacheserver/vf.gf.server.pid
+  start program "/var/vcap/jobs/cacheserver/bin/ctl start" with timeout 180 seconds
+  stop program "/var/vcap/jobs/cacheserver/bin/ctl stop" with timeout 180 seconds
+  group vcap

@@ -1,0 +1,4 @@
+set -e -x
+
+tar xzf jdk8/jdk-8u77-linux-x64.tar.gz
+cp -a jdk1.8.0_77/* ${BOSH_INSTALL_TARGET}

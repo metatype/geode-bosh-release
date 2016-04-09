@@ -1,0 +1,27 @@
+---
+name: cacheserver
+templates:
+  ctl.erb: bin/ctl
+
+packages:
+- jdk8
+- geode
+
+consumes:
+- name: locator
+  type: discovery
+
+provides:
+- name: cacheserver
+  type: client
+
+properties:
+  cacheserver.initial_heap:
+    description: "Initial heap size for cacheserver"
+    default: "1g"
+  cacheserver.max_heap:
+    description: "Maximum heap size for cacheserver"
+    default: "1g"
+  cacheserver.server_port:
+    description: "Port for client connections"
+    default: 40404

@@ -1,0 +1,5 @@
+check process locator
+  with pidfile /var/vcap/sys/run/locator/vf.gf.locator.pid
+  start program "/var/vcap/jobs/locator/bin/ctl start" with timeout 180 seconds
+  stop program "/var/vcap/jobs/locator/bin/ctl stop" with timeout 180 seconds
+  group vcap
